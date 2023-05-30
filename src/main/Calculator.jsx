@@ -30,12 +30,19 @@ export default class Calculator extends Component {
         if (this.state.current === 0) {
             this.setState({ operation, current: 1, clearDisplay: true })
         } else {
+
             // processa a operação
             const equals = operation === '='
             const currentOperation = this.state.operation.replace('X', '*')
             // clona o array de valores
             const values = [...this.state.values]
-            
+
+            // fix division by zero
+            if (values[1] === 0 && currentOperation === '/' && operation === '=') {
+                this.setState({displayValue: 'Error' })
+                return
+            }
+
             try {
                 // executa a operação e atribui o resultado ao primeiro valor
                 values[0] = eval(`${values[0]} ${currentOperation} ${values[1]}`)                
@@ -78,7 +85,6 @@ export default class Calculator extends Component {
             const values = [...this.state.values] // clona o array de valores
             values[i] = newValue // atribui o novo valor ao índice atual
             this.setState({ values }) // atualiza o estado
-            console.log(values)
         }
     }
 
